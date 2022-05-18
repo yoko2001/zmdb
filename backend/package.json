@@ -1,0 +1,26 @@
+{
+    "name": "backend",
+    "version": "1.0.0",
+    "description": "sixiwanzi.live后端",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/sixiwanzi-live/zmdb.git"
+    },
+    "author": "",
+    "license": "Apache",
+    "bugs": {
+        "url": "https://github.com/sixiwanzi-live/zmdb/issues"
+    },
+    "homepage": "https://github.com/sixiwanzi-live/zmdb/#readme",
+    "dependencies": {
+        "better-sqlite3": "^7.5.1",
+        "@fastify/cors": "^7.0.0",
+        "fastify": "^3.29.0",
+        "qiniu": "^7.6.0"
+    }
+}
