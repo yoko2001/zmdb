@@ -93,11 +93,11 @@ export const LiveTable = () => {
                         <SubtitlesOutlinedIcon fontSize='small' />
                     </IconButton>
                 </Tooltip>
-                <Tooltip title='下载视频'>
+                {/* <Tooltip title='下载视频'>
                     <IconButton color='inherit' size='small' component='a' href='' target='_blank'>
                         <FileDownloadOutlinedIcon fontSize='small' />
                     </IconButton>
-                </Tooltip>
+                </Tooltip> */}
             </Stack>
             : <></>
         )}
