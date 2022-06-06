@@ -1,26 +1,21 @@
 {
-    "name": "backend",
+    "name": "koajs-test",
     "version": "1.0.0",
-    "description": "sixiwanzi.live后端",
+    "description": "",
     "main": "index.js",
     "type": "module",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/sixiwanzi-live/zmdb.git"
-    },
     "author": "",
-    "license": "Apache",
-    "bugs": {
-        "url": "https://github.com/sixiwanzi-live/zmdb/issues"
-    },
-    "homepage": "https://github.com/sixiwanzi-live/zmdb/#readme",
+    "license": "ISC",
     "dependencies": {
-        "better-sqlite3": "^7.5.1",
-        "@fastify/cors": "^7.0.0",
-        "fastify": "^3.29.0",
-        "qiniu": "^7.6.0"
+        "@koa/cors": "^3.3.0",
+        "@koa/router": "^10.1.1",
+        "better-sqlite3": "^7.5.3",
+        "koa": "^2.13.4",
+        "koa-body": "^5.0.0",
+        "moment": "^2.29.3",
+        "sharp": "^0.30.5"
     }
 }

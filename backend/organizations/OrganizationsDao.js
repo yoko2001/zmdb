@@ -1,24 +1,26 @@
 
-class OrganizationDao {
+export default class OrganizationsDao {
+    
     constructor(db) {
         this.db = db;
+        this.__init();
     }
 
-    init = () => {
-        const sql = 'CREATE TABLE IF NOT EXISTS organization (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE)';
+    __init = () => {
+        const sql = 'CREATE TABLE IF NOT EXISTS organization(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE)';
         this.db.exec(sql);
     }
 
-    insert = (dto) => {
-        const sql = 'INSERT INTO organization(name) VALUES(?)';
+    insert = (organization) => {
+        const sql = 'INSERT INTO organization(name) VALUES(@name)';
         const stmt = this.db.prepare(sql);
-        return stmt.run(dto.name);
+        return stmt.run(organization);
     }
 
-    update = (dto) => {
+    update = (organization) => {
         const sql = 'UPDATE organization SET name=@name WHERE id=@id';
         const stmt = this.db.prepare(sql);
-        return stmt.run(dto);
+        return stmt.run(organization);
     }
 
     deleteById = (id) => {
@@ -30,23 +32,12 @@ class OrganizationDao {
     findById = (id) => {
         const sql = 'SELECT * FROM organization WHERE id = ?';
         const stmt = this.db.prepare(sql);
-        return this.__toDTO(stmt.get(id));
+        return stmt.get(id);
     }
 
     findAll = () => {
         const sql = 'SELECT * FROM organization ORDER BY id ASC';
         const stmt = this.db.prepare(sql);
-        return stmt.all().map(po => this.__toDTO(po));
-    }
-
-    __toDTO = (po) => {
-        if (!po) {
-            return undefined;    
-        }
-        return {
-            id : po.id,
-            name : po.name        };
+        return stmt.all();
     }
 }
-
-export default OrganizationDao;

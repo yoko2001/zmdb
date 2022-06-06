@@ -1,4 +1,4 @@
-class Srt {
+export class Srt {
 
     constructor() {}
 
@@ -28,4 +28,3 @@ class Srt {
         return r;
     }
 }
-export {Srt};

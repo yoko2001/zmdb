@@ -1,118 +1,122 @@
 import Database from 'better-sqlite3';
-import Fastify from 'fastify';
-import cors from '@fastify/cors';
+import Koa from 'koa';
+import Router from '@koa/router';
+import cors from '@koa/cors';
+import koaBody from 'koa-body';
 import config from './config.js';
-import LiveDao from './dao/LiveDao.js';
-import OrganizationDao from './dao/OrganizationDao.js';
-import VupDao from './dao/VupDao.js';
-import SubtitleDao from './dao/SubtitleDao.js';
-import OrganizationService from './service/OrganizationService.js';
-import VupService from './service/VupService.js';
-import LiveService from './service/LiveService.js';
-import SubtitleService from './service/SubtitleService.js';
-import QiniuClient from './client/QiniuClient.js';
+import { Srt } from './utils.js'
+import { errorHandler, auth } from './middlewares.js';
+import FilesClient from './files/FilesClient.js';
+import OrganizationsDao from './organizations/OrganizationsDao.js';
+import AuthorsDao from './authors/AuthorsDao.js';
+import ClipsDao from './clips/ClipsDao.js';
+import SubtitlesDao from './subtitles/SubtitlesDao.js'
+import RecordsDao from './records/RecordsDao.js';
+import OrganzationsService from './organizations/OrganizationsService.js';
+import AuthorsService from './authors/AuthorsService.js';
+import ClipsService from './clips/ClipsService.js';
+import SubtitlesService from './subtitles/SubtitlesService.js';
+import RecordsService from './records/RecordsService.js';
+import FilesService from './files/FilesServices.js';
 
-(async () => {
-    const db = new Database(config.db.path, { verbose: console.log });
+const app = new Koa({ proxy: true });
+const router = new Router();
 
-    const organizationDao = new OrganizationDao(db);
-    organizationDao.init();
+const db = new Database(config.db.path, { verbose: console.log });
 
-    const vupDao = new VupDao(db);
-    vupDao.init();
+app.context.srt = new Srt();
+app.context.filesClient = new FilesClient();
 
-    const liveDao = new LiveDao(db);
-    liveDao.init();
+app.context.organizationsDao = new OrganizationsDao(db);
+app.context.authorsDao = new AuthorsDao(db);
+app.context.clipsDao = new ClipsDao(db);
+app.context.subtitlesDao = new SubtitlesDao(db);
+app.context.recordsDao = new RecordsDao(db);
 
-    const subtitleDao = new SubtitleDao(db);
-    subtitleDao.init();
+app.context.organizationsService = new OrganzationsService();
+app.context.authorsService = new AuthorsService();
+app.context.clipsService = new ClipsService();
+app.context.subtitlesService = new SubtitlesService();
+app.context.recordsService = new RecordsService();
+app.context.filesService = new FilesService();
 
-    const qiniuClient = new QiniuClient(
-                            config.qiniu.accessKey, 
-                            config.qiniu.secretKey, 
-                            config.qiniu.bucket);
+/**
+ * files
+ */
+router.post('/files/image', async ctx => {
+    ctx.body = await ctx.filesService.uploadImage(ctx);
+});
 
-    const organizationService = new OrganizationService(organizationDao);
-    const vupService = new VupService(vupDao, organizationDao);
-    const liveService = new LiveService(organizationDao, vupDao, liveDao);
-    const subtitleService = new SubtitleService(vupDao, liveDao, subtitleDao, qiniuClient);
+/**
+ * organizations
+ */
+router.get('/organizations', async ctx => {
+    ctx.body = await ctx.organizationsService.findAll(ctx) || [];
+});
 
-    const fastify = Fastify({
-        logger : true,
-        bodyLimit: config.fastify.bodyLimit
-    });
+/**
+ * authors
+ */
+router.get('/organizations/:organizationId/authors', async ctx => {
+    ctx.body = await ctx.authorsService.findByOrganizationId(ctx);
+});
+router.get('/authors', async ctx => {
+    ctx.body = await ctx.authorsService.findAll(ctx);
+});
 
-    fastify.register(cors, { 
-        // put your options here
-    });
-    
-    /** organization */
-    fastify.post('/organization', async (req, rsp) => {
-        return organizationService.insert(req, rsp);
-    });
-    fastify.put('/organization/:id', async (req, rsp) => {
-        return organizationService.update(req, rsp);
-    });
-    fastify.delete('/organization/:id', async (req, rsp) => {
-        return organizationService.deleteById(req, rsp);
-    });
-    fastify.get('/organizations', async (req, rsp) => {
-        return organizationService.findAll(req, rsp);
-    });
+/**
+ * clips
+ */
+router.get('/organizations/:organizationId/clips', async ctx => {
+    ctx.body = await ctx.clipsService.findByOrganizationId(ctx);
+});
+router.get('/clips', async ctx => {
+    ctx.body = await ctx.clipsService.find(ctx);
+})
 
-    /** vup */
-    fastify.post('/organization/:organizationId/vup', async (req, rsp) => {
-        return vupService.insert(req, rsp);
-    });
-    fastify.put('/vup/:id', async (req, rsp) => {
-        return vupService.update(req, rsp);
-    });
-    fastify.delete('/vup/:id', async (req, rsp) => {
-        return vupService.deleteById(req, rsp);
-    });
-    fastify.get('/organization/:organizationId/vups', async (req, rsp) => {
-        return vupService.findByOrganizationId(req, rsp);
-    });
+/**
+ * subtitles
+ */
+router.get('/clips/:clipId/subtitles', async ctx => {
+    ctx.body = await ctx.subtitlesService.findByClipId(ctx) || [];
+});
 
-    /** live */
-    fastify.post('/vup/:vupId/live', async (req, rsp) => {
-        return liveService.insert(req, rsp);
-    });
-    fastify.put('/live/:id', async (req, rsp) => {
-        return liveService.update(req, rsp);
-    });
-    fastify.delete('/live/:id', async (req, rsp) => {
-        return liveService.deleteById(req, rsp);
-    });
-    fastify.get('/organization/:organizationId/lives', async (req, rsp) => {
-        return liveService.findByOrganizationId(req, rsp);
-    });
-    fastify.get('/vup/:vupId/lives', async (req, rsp) => {
-        return liveService.findByVupId(req, rsp);
-    });
-    fastify.get('/lives', async (req, rsp) => {
-        return liveService.findByVupIdsAndContent(req, rsp);
-    });
-
-    /** subtitle */
-    fastify.post('/live/:liveId/subtitles', async (req, rsp) => {
-        return subtitleService.insertByLiveId(req, rsp);
-    });
-    fastify.put('/live/:liveId/subtitle/:lineId', async (req, rsp) => {
-        return subtitleService.update(req, rsp);
-    });
-    fastify.delete('/live/:liveId/subtitles', async (req, rsp) => {
-        return subtitleService.deleteByLiveId(req, rsp);
-    });
-    fastify.get('/live/:liveId/subtitles', async (req, rsp) => {
-        return subtitleService.findByLiveId(req, rsp);
-    });
-
-
-    try {
-        await fastify.listen(config.fastify.port);
-    } catch (err) {
-        fastify.log.error(err);
-        process.exit(1);
+/**
+ * records
+ */
+router.post('/records', async ctx => {
+    ctx.body = await ctx.recordsService.insert(ctx);
+});
+router.delete('/records/:id', async ctx => {
+    ctx.body = await ctx.recordsService.deleteById(ctx);
+});
+router.put('/records/:id/verified/:verified', auth, async ctx => {
+    const verified = parseInt(ctx.params.verified);
+    if (verified === 1) {
+        await ctx.recordsService.verify(ctx);
+    } else if (verified === 2) {
+        await ctx.recordsService.close(ctx);
     }
-})()
+});
+router.get('/records/:target', async ctx => {
+    ctx.body = await ctx.recordsService.findByTarget(ctx) || {};
+})
+
+app.use(cors({
+    origin: '*',
+    credentials: true
+}));
+
+app.use(errorHandler);
+app.use(koaBody({ 
+    jsonLimit: config.web.bodyLimit, 
+    formLimit: config.web.bodyLimit,
+    multipart: true,
+    formidable: {
+        uploadDir: config.web.tmp,
+        keepExtensions: true
+    }
+}));
+app.use(router.routes());
+
+app.listen(config.web.port);
