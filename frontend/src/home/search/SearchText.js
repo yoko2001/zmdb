@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Paper, InputBase, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { context } from './context';
+import { context } from '../context';
 
 export const SearchText = () => {
 

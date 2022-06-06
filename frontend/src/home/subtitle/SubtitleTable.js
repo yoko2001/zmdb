@@ -1,19 +1,10 @@
 import * as React from 'react';
 import { Box, Divider, Link } from '@mui/material';
 import { FixedSizeList } from 'react-window';
-import config from './config';
+import config from '../../config';
+import { toTime } from '../../utils';
 
-const toTime = (timestamp) => {
-    const ms = parseInt(timestamp % 1000);
-    timestamp = parseInt(timestamp / 1000);
-    const s = parseInt(timestamp % 60);
-    timestamp = parseInt(timestamp/ 60);
-    const m = parseInt(timestamp % 60);
-    const h = parseInt(timestamp / 60);
-    return `${h.toString().padStart(2, 0)}:${m.toString().padStart(2, 0)}:${s.toString().padStart(2, 0)}.${ms.toString().padStart(3, 0)}`;
-}
-
-export const SubtitleTable = ({match, live, subtitles}) => {
+export const SubtitleTable = ({match, clip, subtitles}) => {
 
     const listRef = React.useRef();
 
@@ -27,8 +18,8 @@ export const SubtitleTable = ({match, live, subtitles}) => {
             <div style={style}>
                 <Box sx={{ display:'flex', backgroundColor:{backgroundColor} }}>
                     <Box sx={{ flex:1 }}>{data.subtitles[index].lineId}</Box>
-                    <Box sx={{ flex:3 }}><Link target='_blank' underline="hover" rel ="noreferrer" href={`${config.url.live}/${data.live.bv}?start_progress=${data.subtitles[index].start}`}>{toTime(data.subtitles[index].start)}</Link></Box>
-                    <Box sx={{ flex:3 }}><Link target='_blank' underline="hover" rel ="noreferrer" href={`${config.url.live}/${data.live.bv}?start_progress=${data.subtitles[index].end}`}>{toTime(data.subtitles[index].end)}</Link></Box>
+                    <Box sx={{ flex:3 }}><Link target='_blank' underline="hover" rel ="noreferrer" href={`${config.url.clip}/${data.clip.bv}?start_progress=${data.subtitles[index].start}`}>{toTime(data.subtitles[index].start)}</Link></Box>
+                    <Box sx={{ flex:3 }}><Link target='_blank' underline="hover" rel ="noreferrer" href={`${config.url.clip}/${data.clip.bv}?start_progress=${data.subtitles[index].end}`}>{toTime(data.subtitles[index].end)}</Link></Box>
                     <Box sx={{ flex:14 }} dangerouslySetInnerHTML={{__html:data.subtitles[index].content}} />
                 </Box>
             </div>
@@ -53,7 +44,7 @@ export const SubtitleTable = ({match, live, subtitles}) => {
                 itemSize={25}
                 width={'100%'}
                 itemData={{
-                    live: live, 
+                    clip: clip, 
                     subtitles:subtitles
                 }}
             >

@@ -1,7 +1,7 @@
-import { Button, ButtonGroup, IconButton } from '@mui/material';
+import * as React from 'react';
+import { ButtonGroup, IconButton } from '@mui/material';
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import ArrowCircleDownOutlinedIcon from '@mui/icons-material/ArrowCircleDownOutlined';
-import * as React from 'react';
 
 export const SubtitleButtonGroup = ({matches, setMatch}) => {
 

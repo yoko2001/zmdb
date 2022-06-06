@@ -3,9 +3,9 @@ import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material
 import Button from '@mui/material/Button'
 import { SubtitleButtonGroup } from './SubtitleButtonGroup';
 import { SubtitleTable } from './SubtitleTable';
-import { context } from './context';
+import { context } from '../context';
 
-export const SubtitleDialog = ({live, subtitles, status, setStatus}) => {
+export const SubtitleDialog = ({clip, subtitles, status, setStatus}) => {
 
     const { searchWord } = React.useContext(context);
     const [match, setMatch] = React.useState(0);
@@ -49,11 +49,11 @@ export const SubtitleDialog = ({live, subtitles, status, setStatus}) => {
     return (
         <Dialog fullscreen='true' fullWidth={true} maxWidth='lg' open={status} onClose={onClose}>
             <DialogTitle>
-                {live.title}
+                {clip.title}
             </DialogTitle>
             <DialogContent>
                 { matches.length > 0 ? <SubtitleButtonGroup matches={matches} setMatch={setMatch} /> : <></>}
-                <SubtitleTable match={match} live={live} subtitles={markedSubtitles} />                
+                <SubtitleTable match={match} clip={clip} subtitles={markedSubtitles} />                
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>关闭</Button>

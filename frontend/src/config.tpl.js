@@ -1,6 +1,6 @@
 export default {
     apiUrl: '',
-    vupUrl: '',
-    liveUrl: '',
+    authorUrl: '',
+    clipUrl: '',
     fileUrl: ''
 };
