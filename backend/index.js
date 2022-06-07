@@ -7,14 +7,14 @@ import config from './config.js';
 import { Srt } from './utils.js'
 import { errorHandler, auth } from './middlewares.js';
 import FilesClient from './files/FilesClient.js';
-import OrganizationsDao from './organizations/OrganizationsDao.js';
-import AuthorsDao from './authors/AuthorsDao.js';
-import ClipsDao from './clips/ClipsDao.js';
+import OrganizationDao from './organization/OrganizationDao.js';
+import AuthorDao from './author/AuthorDao.js';
+import ClipDao from './clip/ClipDao.js';
 import SubtitlesDao from './subtitles/SubtitlesDao.js'
 import RecordsDao from './records/RecordsDao.js';
-import OrganzationsService from './organizations/OrganizationsService.js';
-import AuthorsService from './authors/AuthorsService.js';
-import ClipsService from './clips/ClipsService.js';
+import OrganzationService from './organization/OrganizationService.js';
+import AuthorService from './author/AuthorService.js';
+import ClipService from './clip/ClipService.js';
 import SubtitlesService from './subtitles/SubtitlesService.js';
 import RecordsService from './records/RecordsService.js';
 import FilesService from './files/FilesServices.js';
@@ -27,15 +27,15 @@ const db = new Database(config.db.path, { verbose: console.log });
 app.context.srt = new Srt();
 app.context.filesClient = new FilesClient();
 
-app.context.organizationsDao = new OrganizationsDao(db);
-app.context.authorsDao = new AuthorsDao(db);
-app.context.clipsDao = new ClipsDao(db);
+app.context.organizationDao = new OrganizationDao(db);
+app.context.authorDao = new AuthorDao(db);
+app.context.clipDao = new ClipDao(db);
 app.context.subtitlesDao = new SubtitlesDao(db);
 app.context.recordsDao = new RecordsDao(db);
 
-app.context.organizationsService = new OrganzationsService();
-app.context.authorsService = new AuthorsService();
-app.context.clipsService = new ClipsService();
+app.context.organizationService = new OrganzationService();
+app.context.authorService = new AuthorService();
+app.context.clipService = new ClipService();
 app.context.subtitlesService = new SubtitlesService();
 app.context.recordsService = new RecordsService();
 app.context.filesService = new FilesService();
@@ -48,30 +48,30 @@ router.post('/files/image', async ctx => {
 });
 
 /**
- * organizations
+ * organization
  */
 router.get('/organizations', async ctx => {
-    ctx.body = await ctx.organizationsService.findAll(ctx) || [];
+    ctx.body = await ctx.organizationService.findAll(ctx) || [];
 });
 
 /**
  * authors
  */
 router.get('/organizations/:organizationId/authors', async ctx => {
-    ctx.body = await ctx.authorsService.findByOrganizationId(ctx);
+    ctx.body = await ctx.authorService.findByOrganizationId(ctx);
 });
 router.get('/authors', async ctx => {
-    ctx.body = await ctx.authorsService.findAll(ctx);
+    ctx.body = await ctx.authorService.findAll(ctx);
 });
 
 /**
  * clips
  */
 router.get('/organizations/:organizationId/clips', async ctx => {
-    ctx.body = await ctx.clipsService.findByOrganizationId(ctx);
+    ctx.body = await ctx.clipService.findByOrganizationId(ctx);
 });
 router.get('/clips', async ctx => {
-    ctx.body = await ctx.clipsService.find(ctx);
+    ctx.body = await ctx.clipService.find(ctx);
 })
 
 /**

@@ -1,17 +1,17 @@
 export default {
-    organizations: {
+    organization: {
         name: {
             lowerLimit: 1,
             upperLimit: 20
         }
     },
-    authors: {
+    author: {
         name: {
             lowerLimit: 1,
             upperLimit: 30
         }
     },
-    clips: {
+    clip: {
         title: {
             lowerLimit: 1,
             upperLimit: 20

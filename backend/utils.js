@@ -28,3 +28,7 @@ export class Srt {
         return r;
     }
 }
+
+export const toExtension = (filename) => {
+    return filename.substring(filename.lastIndexOf('.'));
+}

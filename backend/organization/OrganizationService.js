@@ -1,11 +1,12 @@
-import config from "../config.js";
 import validation from "../validation.js";
 import error from '../error.js';
+import { toExtension } from "../utils.js";
 
-export default class OrganzationsService {
+export default class OrganzationService {
     /**
      * 
      * @param {name} 社团名称，长度不能低于1字符，不能超过20字符 
+     * @param {filename} 头像文件名
      * @returns 
      */
     insert = async (ctx) => {
@@ -13,21 +14,21 @@ export default class OrganzationsService {
         let organization = {};
         // 检查参数合法性
         const name = entity.name || '';
-        if (name.length < validation.organizations.name.lowerLimit) {
-            throw error.organizations.name.LengthTooShort;
+        if (name.length < validation.organization.name.lowerLimit) {
+            throw error.organization.name.LengthTooShort;
         }
-        if (name.length > validation.organizations.name.upperLimit) {
-            throw error.organizations.name.LengthTooLong;
+        if (name.length > validation.organization.name.upperLimit) {
+            throw error.organization.name.LengthTooLong;
         }
         organization.name = name;
 
-        const r = ctx.organizationsDao.insert(organization);
+        const r = ctx.organizationDao.insert(organization);
 
         const filename = entity.filename || '';
         if (filename.length === 0) {
             throw error.files.NotFound;
         }
-        const extension = filename.substring(filename.lastIndexOf('.'));
+        const extension = toExtension(filename);
         const dst = `organizations/${r.lastInsertRowid}${extension}`;
         const src = entity.filename;
         await ctx.filesClient.move(src, dst);
@@ -42,29 +43,29 @@ export default class OrganzationsService {
         const entity = ctx.state.entity;
         const id = parseInt(entity.id);
         // 检查参数合法性
-        let organization = ctx.organizationsDao.findById(id);
+        let organization = ctx.organizationDao.findById(id);
         if (!organization) {
-            throw error.organizations.NotFound;
+            throw error.organization.NotFound;
         }
         if (entity.hasOwnProperty('name')) {
             const name = entity.name;
-            if (name.length < validation.organizations.name.lowerLimit) {
-                throw error.organizations.name.LengthTooShort;
+            if (name.length < validation.organization.name.lowerLimit) {
+                throw error.organization.name.LengthTooShort;
             }
-            if (name.length > validation.organizations.name.upperLimit) {
-                throw error.organizations.name.LengthTooLong;
+            if (name.length > validation.organization.name.upperLimit) {
+                throw error.organization.name.LengthTooLong;
             }
             organization.name = name;
         }
 
-        ctx.organizationsDao.update(organization);
+        ctx.organizationDao.update(organization);
 
         if (entity.hasOwnProperty('filename')) {
             const filename = entity.filename || '';
             if (filename.length === 0) {
                 throw error.files.NotFound;
             }
-            const extension = filename.substring(filename.lastIndexOf('.'));
+            const extension = toExtension(filename);
             const dst = `organizations/${r.lastInsertRowid}${extension}`;
             const src = entity.filename;
             await ctx.filesClient.move(src, dst);
@@ -74,12 +75,13 @@ export default class OrganzationsService {
     deleteById = async (ctx) => {
         const entity = ctx.state.entity;
         const id = entity.id;
-        ctx.organizationsDao.deleteById(id);
+        ctx.organizationDao.deleteById(id);
+        
         const file = `organizations/${id}.webp`;
         await ctx.filesClient.delete(file);
     }
     
     findAll = (ctx) => {
-        return ctx.organizationsDao.findAll();
+        return ctx.organizationDao.findAll();
     }
 }

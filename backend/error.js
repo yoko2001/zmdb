@@ -33,7 +33,7 @@ export default {
             message: '刷新失败'
         }
     },
-    organizations: {
+    organization: {
         NotFound: {
             code: 400100100,
             message: '社团不存在'
@@ -41,15 +41,15 @@ export default {
         name: {
             LengthTooShort: {
                 code: 400100101,
-                message: `社团名称长度不能小于${validation.organizations.name.lowerLimit}字符`
+                message: `社团名称长度不能小于${validation.organization.name.lowerLimit}字符`
             },
             LengthTooLong: {
                 code: 400100102,
-                message: `社团名称长度不能大于${validation.organizations.name.upperLimit}字符`
+                message: `社团名称长度不能大于${validation.organization.name.upperLimit}字符`
             }
         }
     },
-    authors: {
+    author: {
         NotFound: {
             code: 400100110,
             message: '作者不存在'
@@ -57,15 +57,15 @@ export default {
         name: {
             LengthTooShort: {
                 code: 400100111,
-                message: `作者昵称长度不能小于${validation.authors.name.lowerLimit}字符`
+                message: `作者昵称长度不能小于${validation.author.name.lowerLimit}字符`
             },
             LengthTooLong: {
                 code: 400100112,
-                message: `作者昵称长度不能大于${validation.authors.name.upperLimit}字符`
+                message: `作者昵称长度不能大于${validation.author.name.upperLimit}字符`
             }
         },
     },
-    clips: {
+    clip: {
         NotFound: {
             code: 400100120,
             message: '作品不存在'
@@ -73,17 +73,17 @@ export default {
         title: {
             LengthTooShort: {
                 code: 400100121,
-                message: `直播标题长度不能小于${validation.clips.title.lowerLimit}字符`
+                message: `直播标题长度不能小于${validation.clip.title.lowerLimit}字符`
             },
             LengthTooLong: {
                 code: 400100122,
-                message: `直播标题长度不能大于${validation.clips.title.upperLimit}字符`
+                message: `直播标题长度不能大于${validation.clip.title.upperLimit}字符`
             }
         },
         bv: {
             IllegalFormat: {
                 code: 400100123,
-                message: `录播视频bv号长度必须是${validation.clips.bv.limit}字符`
+                message: `录播视频bv号长度必须是${validation.clip.bv.limit}字符`
             }
         },
         datetime: {
@@ -95,21 +95,21 @@ export default {
         authors: {
             TooLittle: {
                 code: 400100125,
-                message: `查询的作者数量不应该小于${validation.clips.authors.lowerLimit}个`
+                message: `查询的作者数量不应该小于${validation.clip.authors.lowerLimit}个`
             },
             TooMuch: {
                 code: 400100126,
-                message: `查询的主播数量不应该大于${validation.clips.authors.upperLimit}个`
+                message: `查询的主播数量不应该大于${validation.clip.authors.upperLimit}个`
             },
         },
         content: {
             LengthTooShort: {
                 code: 400100127,
-                message: `搜索词长度不能小于${validation.clips.content.lowerLimit}字符`
+                message: `搜索词长度不能小于${validation.clip.content.lowerLimit}字符`
             },
             LengthTooLong: {
                 code: 400100128,
-                message: `搜索词长度不能大于${validation.clips.content.upperLimit}字符`
+                message: `搜索词长度不能大于${validation.clip.content.upperLimit}字符`
             }
         }
     },
@@ -149,13 +149,13 @@ export default {
         remark: {
             LengthTooLong: {
                 code: 400100293,
-                message: `备注长度不能大于${validation.organizations.name.upperLimit}字符`
+                message: `备注长度不能大于${validation.records.remark.upperLimit}字符`
             }
         },
         comment: {
             LengthTooLong: {
                 code: 400100294,
-                message: `评论长度不能大于${validation.organizations.name.upperLimit}字符`
+                message: `评论长度不能大于${validation.records.comment.upperLimit}字符`
             }
         },
         verified: {

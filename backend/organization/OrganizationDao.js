@@ -1,5 +1,4 @@
-
-export default class OrganizationsDao {
+export default class OrganizationDao {
     
     constructor(db) {
         this.db = db;
