@@ -128,49 +128,5 @@ export default {
                 message: `字幕文本解析错误`
             }
         }
-    },
-    records: {
-        NotFound: {
-            code: 400100290,
-            message: '记录不存在'
-        },
-        target: {
-            Illegal: {
-                code: 400100291,
-                message: '非法target'
-            }
-        },
-        type: {
-            Illegal: {
-                code: 400100292,
-                message: '非法type'
-            }
-        },
-        remark: {
-            LengthTooLong: {
-                code: 400100293,
-                message: `备注长度不能大于${validation.records.remark.upperLimit}字符`
-            }
-        },
-        comment: {
-            LengthTooLong: {
-                code: 400100294,
-                message: `评论长度不能大于${validation.records.comment.upperLimit}字符`
-            }
-        },
-        verified: {
-            Verified: {
-                code: 400100295,
-                message: '已经审核通过了，无需再次审核'
-            },
-            Closed: {
-                code: 400100296,
-                message: '该申请已经关闭'
-            },
-            UnknownVerified: {
-                code: 400100296,
-                message: '未知的审核标志'
-            }
-        }
     }
 }

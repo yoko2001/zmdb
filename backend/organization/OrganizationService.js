@@ -10,7 +10,9 @@ export default class OrganzationService {
      * @returns 
      */
     insert = async (ctx) => {
-        const entity = ctx.state.entity;
+        const entity = ctx.body;
+        console.log(ctx);
+
         let organization = {};
         // 检查参数合法性
         const name = entity.name || '';
@@ -23,25 +25,29 @@ export default class OrganzationService {
         organization.name = name;
 
         const r = ctx.organizationDao.insert(organization);
+        const id = r.lastInsertRowid;
 
         const filename = entity.filename || '';
         if (filename.length === 0) {
             throw error.files.NotFound;
         }
         const extension = toExtension(filename);
-        const dst = `organizations/${r.lastInsertRowid}${extension}`;
-        const src = entity.filename;
+        const dst = `organizations/${id}${extension}`;
+        const src = filename;
         await ctx.filesClient.move(src, dst);
+
+        return ctx.organizationDao.findById(id);
     }
 
     /**
      * 
      * @param {name} 社团名称，长度不能低于1字符，不能超过20字符 
+     * @param {filename} 头像文件名
      * @returns 
      */
     update = async (ctx) => {
-        const entity = ctx.state.entity;
-        const id = parseInt(entity.id);
+        const id = parseInt(ctx.params.id);
+        const entity = ctx.body;
         // 检查参数合法性
         let organization = ctx.organizationDao.findById(id);
         if (!organization) {
@@ -66,15 +72,16 @@ export default class OrganzationService {
                 throw error.files.NotFound;
             }
             const extension = toExtension(filename);
-            const dst = `organizations/${r.lastInsertRowid}${extension}`;
-            const src = entity.filename;
+            const dst = `organizations/${organization.id}${extension}`;
+            const src = filename;
             await ctx.filesClient.move(src, dst);
         }
+
+        return ctx.organizationDao.findById(id);
     }
 
     deleteById = async (ctx) => {
-        const entity = ctx.state.entity;
-        const id = entity.id;
+        const id = ctx.params.id;
         ctx.organizationDao.deleteById(id);
         
         const file = `organizations/${id}.webp`;

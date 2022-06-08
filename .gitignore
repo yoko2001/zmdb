@@ -107,3 +107,4 @@ dist
 *.db
 package-lock.json
 config.js
+tmp/

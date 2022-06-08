@@ -35,19 +35,5 @@ export default {
         content: {
             lowerLimit: 1
         }
-    },
-    records:{
-        target: {
-            range: ['organizations', 'authors', 'clips', 'subtitles']
-        },
-        type: {
-            range: ['insert', 'update', 'delete']
-        },
-        remark: {
-            upperLimit: 200
-        },
-        comment: {
-            upperLimit: 200
-        }
     }
 }

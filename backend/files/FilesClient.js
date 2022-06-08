@@ -1,4 +1,4 @@
-import { access, unlink, writeFile, rename } from 'fs/promises';
+import { unlink, writeFile, rename } from 'fs/promises';
 import Sharp from "sharp";
 import config from '../config.js';
 
@@ -25,7 +25,8 @@ export default class FilesClient {
 
     changeImageType = async (src) => {
         const dst = src.substring(0, src.lastIndexOf('.')) + '.' + config.web.imageType;
-        await Sharp(`${config.web.tmp}/${src}`).toFile(`${config.web.tmp}/${dst}`);
+        await Sharp(`${config.web.tmpDir}/${src}`).toFile(`${config.web.tmpDir}/${dst}`);
+        return dst;
     }
 
 }
