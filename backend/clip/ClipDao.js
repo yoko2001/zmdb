@@ -55,7 +55,6 @@ export default class ClipDao {
     }
 
     findByOrganizationId = (organizationId) => {
-        // const sql = `SELECT clip.* FROM clip LEFT JOIN author ON clip.authorId = author.id LEFT JOIN organization ON author.organizationId = organization.id WHERE organization.id=? ORDER BY clip.datetime DESC`;
         const sql = 'SELECT ' + 
                         'clip.id as clip_id, ' +
                         'clip.authorId as clip_authorId, ' +
@@ -78,9 +77,26 @@ export default class ClipDao {
     }
 
     findByAuthorIdsAndContent = (authorIds, content) => {
-        const sql = `SELECT DISTINCT(clip.id), clip.* FROM clip LEFT JOIN subtitle ON clip.id = subtitle.clipId WHERE clip.authorId IN (${authorIds.join(',')}) AND subtitle.content LIKE ? ORDER BY clip.datetime DESC`;
+        const sql = 'SELECT ' + 
+                        'DISTINCT(clip.id) AS clip_id,' +
+                        'clip.authorId AS clip_authorId,' +
+                        'clip.title AS clip_title,' +
+                        'clip.bv AS clip_bv,' +
+                        'clip.datetime AS clip_datetime,' +
+                        'author.id AS author_id,' +
+                        'author.organizationId AS author_organizationId,' +
+                        'author.uid AS author_uid,' +
+                        'author.name AS author_name,' +
+                        'organization.id AS organization_id,' +
+                        'organization.name AS organization_name ' +
+                    'FROM clip ' +
+                    'LEFT JOIN subtitle ON clip.id = subtitle.clipId '+
+                    'LEFT JOIN author ON clip.authorId=author.id ' +
+                    'LEFT JOIN organization ON author.organizationId=organization.id ' +
+                    `WHERE subtitle.content LIKE ? AND clip.authorId IN (${authorIds.join(',')}) ` +
+                    'ORDER BY clip.datetime DESC';
         const stmt = this.db.prepare(sql);
-        return stmt.all('%' + content + '%');
+        return stmt.all('%' + content + '%').map(item => { return this.__toDTO(item) });
     }
 
     findAll = () => {

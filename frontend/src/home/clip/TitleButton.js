@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button } from '@mui/material';
 import { context as globalContext } from '../../context';
-import SubtitlesApi from '../../api/SubtitlesApi';
+import SubtitlesApi from '../../api/SubtitleApi';
 import { SubtitleDialog } from '../subtitle/SubtitleDialog';
 
 export const TitleButton = ({clip, subtitleMap}) => {

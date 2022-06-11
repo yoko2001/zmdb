@@ -11,14 +11,6 @@ export const Header = () => {
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         <Link component={RouterLink} color='inherit' underline='none' to='/'>字幕库</Link>
                     </Typography>
-                    <IconButton 
-                        component={RouterLink}
-                        to='/admin'
-                        color='inherit' 
-                        size='middle' 
-                    >
-                        <FactCheckIcon />
-                    </IconButton>
                 </Toolbar>
             </AppBar>
             <Toolbar /> {/** 避免AppBar压住下面的Box */}

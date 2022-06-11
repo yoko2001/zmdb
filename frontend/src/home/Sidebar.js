@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { Link as RouterLink, useParams } from 'react-router-dom';
-import { Avatar, Box, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { Link as RouterLink, Navigate, useParams } from 'react-router-dom';
+import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from '@mui/material';
 import { context } from './context';
 import config from '../config';
 
@@ -10,6 +9,9 @@ export const Sidebar = () => {
     const { organizations } = React.useContext(context);
     const params = useParams();
 
+    if (!params.organizationId) {
+        return <Navigate to="/organizations/1" replace={false} />
+    }
     return (
         <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
             <List component='nav'>

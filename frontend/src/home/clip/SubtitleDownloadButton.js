@@ -3,7 +3,7 @@ import { IconButton, Tooltip } from '@mui/material';
 import SubtitlesOutlinedIcon from '@mui/icons-material/SubtitlesOutlined';
 import { context as globalContext } from '../../context';
 import { toSrt } from '../../utils';
-import SubtitlesApi from '../../api/SubtitlesApi';
+import SubtitlesApi from '../../api/SubtitleApi';
 
 export const SubtitleDownloadButton = ({ clip, subtitleMap }) => {
 
@@ -14,7 +14,7 @@ export const SubtitleDownloadButton = ({ clip, subtitleMap }) => {
         const virtualUrl = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = virtualUrl;
-        a.setAttribute('download', `${clip.bv}.srt`);
+        a.setAttribute('download', `${clip.id}.srt`);
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

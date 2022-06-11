@@ -3,11 +3,11 @@ import { useParams } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { MainPanel } from './MainPanel';
 import { Sidebar } from './Sidebar';
-import OrganizationsApi from '../api/OrganizationsApi';
-import AuthorsApi from '../api/AuthorsApi';
+import OrganizationsApi from '../api/OrganizationApi';
+import AuthorsApi from '../api/AuthorApi';
 import { context } from './context';
 import { context as globalContext } from '../context';
-import ClipsApi from '../api/ClipsApi';
+import ClipApi from '../api/ClipApi';
 
 export const Home = () => {
     
@@ -26,7 +26,7 @@ export const Home = () => {
             setSearchWord(searchWord);
             const authorIds = selectedAuthors.map(selectedAuthor => selectedAuthor.id).join(',');
             setLoading(true);
-            ClipsApi.findByAuthorIdsAndContent(authorIds, searchWord).then(res => {
+            ClipApi.findByAuthorIdsAndContent(authorIds, searchWord).then(res => {
                 const clips = res.data || [];
                 setClips(clips);
                 setLoading(false);
@@ -55,7 +55,7 @@ export const Home = () => {
                 setSelectedAuthors(authors);
             });
         
-            ClipsApi.findByOrganizationId(params.organizationId).then(res => {
+            ClipApi.findByOrganizationId(params.organizationId).then(res => {
                 const clips = res.data || [];
                 setClips(clips);
             });

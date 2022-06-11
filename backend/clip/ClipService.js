@@ -151,10 +151,10 @@ export default class ClipService {
         const req = ctx.request;
         if (req.query.authorIds && req.query.content) {
             const authorIds = req.query.authorIds.split(",") || [];
-            if (authorIds.length < validation.clip.author.lowerLimit) {
+            if (authorIds.length < validation.clip.authors.lowerLimit) {
                 throw error.clip.authors.TooLittle;
             }
-            if (authorIds.length > validation.clip.author.upperLimit) {
+            if (authorIds.length > validation.clip.authors.upperLimit) {
                 throw error.clip.authors.TooMuch;
             }
 

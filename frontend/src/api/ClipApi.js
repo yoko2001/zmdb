@@ -1,7 +1,7 @@
 import axios from 'axios';
 import config from '../config';
 
-export default class ClipsApi {
+export default class ClipApi {
 
     static findByOrganizationId = (organizationId) => {
         return axios.get(`${config.url.api}/organizations/${organizationId}/clips`);
@@ -11,9 +11,5 @@ export default class ClipsApi {
         return axios.get(`${config.url.api}/clips`, {
             params: { authorIds, content }
         });
-    }
-
-    static findAll = () => {
-        return axios.get(`${config.url.api}/clips`);
     }
 }
