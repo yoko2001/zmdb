@@ -38,9 +38,9 @@ export const ClipTable = () => {
             params.value &&
             <Link href={`${config.url.clip}/${params.value}`} rel ="noreferrer" target='_blank' sx={{ fontFamily:'monospace' }}>{params.value}</Link>
         )},
-        { field: 'avatar', headerName: '封面', flex:1.5, headerAlign:'center', align:'center', renderCell: params=> (
+        { field: 'avatar', headerName: '封面', flex:1.2, headerAlign:'center', align:'center', renderCell: params=> (
             params.value && 
-            <Avatar sx={{ width:'3rem', height:'2rem'}} variant='square' src={`${config.url.file}/clips/${params.value.author.organizationId}/${params.value.author.id}/${params.value.id}.webp`}/>
+            <Avatar sx={{ width:'5rem', height:'2.2rem'}} variant='square' src={`${config.url.file}/clips/${params.value.author.organizationId}/${params.value.author.id}/${params.value.id}.webp`}/>
         )},
         { field:'title', headerName:'标题', flex:4, renderCell:params => (
             params.value &&
