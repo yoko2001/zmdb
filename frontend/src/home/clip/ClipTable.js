@@ -40,7 +40,7 @@ export const ClipTable = () => {
         )},
         { field: 'avatar', headerName: '封面', flex:1.5, headerAlign:'center', align:'center', renderCell: params=> (
             params.value && 
-            <Avatar sx={{ width:'3rem', height:'2rem'}} src={`${config.url.file}/clips/${params.value.author.organizationId}/${params.value.author.id}/${params.value.id}.webp`}/>
+            <Avatar sx={{ width:'3rem', height:'2rem'}} variant='square' src={`${config.url.file}/clips/${params.value.author.organizationId}/${params.value.author.id}/${params.value.id}.webp`}/>
         )},
         { field:'title', headerName:'标题', flex:4, renderCell:params => (
             params.value &&

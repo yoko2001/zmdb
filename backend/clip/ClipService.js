@@ -74,6 +74,7 @@ export default class ClipService {
     update = async (ctx) => {
         const id = parseInt(ctx.params.id);
         const entity = ctx.request.body;
+        console.log(entity);
         // 检查参数合法性
         let clip = ctx.clipDao.findById(id);
         if (!clip) {
