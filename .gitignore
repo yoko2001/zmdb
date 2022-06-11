@@ -103,8 +103,10 @@ dist
 # TernJS port file
 .tern-port
 
+# Project
 *.srt
 *.db
 package-lock.json
 config.js
-tmp/
+backend/tmp/
+backend/static/

@@ -113,7 +113,7 @@ export default {
             }
         }
     },
-    subtitles: {
+    subtitle: {
         NotFound: {
             code: 400100130,
             message: '字幕不存在'
@@ -121,7 +121,7 @@ export default {
         content: {
             LengthTooShort: {
                 code: 400100131,
-                message: `字幕内容不能小于${validation.subtitles.content.lowerLimit}字符`
+                message: `字幕内容不能小于${validation.subtitle.content.lowerLimit}字符`
             },
             ParseError: {
                 code: 400100122,

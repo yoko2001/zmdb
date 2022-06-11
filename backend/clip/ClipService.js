@@ -1,5 +1,6 @@
 import error from "../error.js";
 import validation from "../validation.js";
+import config from "../config.js";
 import { toExtension } from '../utils.js';
 
 export default class ClipService {
@@ -12,7 +13,7 @@ export default class ClipService {
      * @param {filename} 视频缩略图
      */
     insert = async (ctx) => {
-        const entity = ctx.state.entity;
+        const entity = ctx.request.body;
         let clip = {};
         // 检查参数合法性
         const authorId = entity.authorId;
@@ -45,16 +46,21 @@ export default class ClipService {
         }
         clip.datetime = datetime;
 
-        ctx.clipDao.insert(clip);
+        const r = ctx.clipDao.insert(clip);
+        const id = r.lastInsertRowid;
 
+        await ctx.fileClient.mkdir(`${config.web.staticDir}/clips/${author.organizationId}/${authorId}`);
+        
         const filename = entity.filename || '';
         if (filename.length === 0) {
             throw error.files.NotFound;
         }
-        const extension = filename.substring(filename.lastIndexOf('.'));
-        const dst = `clips/${author.organizationId}/${authorId}/${r.lastInsertRowid}${extension}`;
-        const src = entity.filename;
-        await ctx.filesClient.move(src, dst);
+        const extension = toExtension(filename);
+        const dst = `clips/${author.organizationId}/${authorId}/${id}${extension}`;
+        const src = filename;
+        await ctx.fileClient.move(src, dst);
+
+        return ctx.clipDao.findById(id);
     }
 
     /**
@@ -66,9 +72,9 @@ export default class ClipService {
      * @param {filename} 头像缩略图
      */
     update = async (ctx) => {
-        const entity = ctx.state.entity;
+        const id = parseInt(ctx.params.id);
+        const entity = ctx.request.body;
         // 检查参数合法性
-        const id = entity.id;
         let clip = ctx.clipDao.findById(id);
         if (!clip) {
             throw error.clip.NotFound;
@@ -83,7 +89,7 @@ export default class ClipService {
         }
 
         if (entity.hasOwnProperty('title')) {
-            const title = req.body.title || '';
+            const title = entity.title || '';
             if (title.length < validation.clip.title.lowerLimit) {
                 throw error.clip.title.LengthTooShort;
             }
@@ -118,26 +124,26 @@ export default class ClipService {
             }
             const author = ctx.authorDao.findById(clip.authorId);
             const extension = toExtension(filename);
-            const dst = `clips/${author.organizationId}/${author.id}/${r.lastInsertRowid}${extension}`;
-            const src = entity.filename;
-            await ctx.filesClient.move(src, dst);
+            const dst = `clips/${author.organizationId}/${author.id}/${id}${extension}`;
+            const src = filename;
+            await ctx.fileClient.move(src, dst);
         }
+
+        return ctx.clipDao.findById(id);
     }
 
     deleteById = async (ctx) => {
-        const entity = ctx.state.entity;
-        const id = entity.id;
+        const id = parseInt(ctx.params.id);
         const clip = ctx.clipDao.findById(id);
         const author = ctx.authorDao.findById(id);
         ctx.clipDao.deleteById(id);
         
         const file = `clips/${author.organizationId}/${clip.authorId}/${id}.webp`;
-        await ctx.filesClient.delete(file);
+        await ctx.fileClient.delete(file);
     }
 
     findByOrganizationId = (ctx) => {
-        const req = ctx.request;
-        const organizationId = parseInt(req.params.organizationId);
+        const organizationId = parseInt(ctx.params.organizationId);
         return ctx.clipDao.findByOrganizationId(organizationId);
     }
 
@@ -146,10 +152,10 @@ export default class ClipService {
         if (req.query.authorIds && req.query.content) {
             const authorIds = req.query.authorIds.split(",") || [];
             if (authorIds.length < validation.clip.author.lowerLimit) {
-                throw error.clip.author.TooLittle;
+                throw error.clip.authors.TooLittle;
             }
             if (authorIds.length > validation.clip.author.upperLimit) {
-                throw error.clip.author.TooMuch;
+                throw error.clip.authors.TooMuch;
             }
 
             // TODO 删除content中的符号字符

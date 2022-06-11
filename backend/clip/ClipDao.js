@@ -72,7 +72,7 @@ export default class ClipDao {
                     'LEFT JOIN author ON clip.authorId=author.id ' +
                     'LEFT JOIN organization ON author.organizationId=organization.id ' +
                     'WHERE organization.id=? ' +
-                    'ORDER BY author.id ASC';
+                    'ORDER BY clip.datetime DESC';
         const stmt = this.db.prepare(sql);
         return stmt.all(organizationId).map(item => { return this.__toDTO(item) });
     }
@@ -84,7 +84,6 @@ export default class ClipDao {
     }
 
     findAll = () => {
-        // const sql = `SELECT * FROM clip ORDER BY id DESC`;
         const sql = 'SELECT ' + 
                         'clip.id as clip_id, ' +
                         'clip.authorId as clip_authorId, ' +
@@ -100,7 +99,7 @@ export default class ClipDao {
                     'FROM clip ' +
                     'LEFT JOIN author ON clip.authorId=author.id ' +
                     'LEFT JOIN organization ON author.organizationId=organization.id ' +
-                    'ORDER BY author.id ASC';
+                    'ORDER BY clip.id DESC';
         const stmt = this.db.prepare(sql);
         return stmt.all().map(item => { return this.__toDTO(item) });
     }

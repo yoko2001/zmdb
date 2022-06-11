@@ -1,5 +1,4 @@
-
-export default class SubtitlesDao {
+export default class SubtitleDao {
     constructor(db) {
         this.db = db;
         this.__init();
@@ -41,7 +40,6 @@ export default class SubtitlesDao {
     findByClipId = (clipId) => {
         const sql = 'SELECT * FROM subtitle WHERE clipId=? ORDER BY lineId ASC';
         const stmt = this.db.prepare(sql);
-        const r = stmt.all(clipId);
-        return r;
+        return stmt.all(clipId);
     }
 }

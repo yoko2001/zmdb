@@ -1,5 +1,6 @@
 import validation from "../validation.js";
 import error from '../error.js';
+import config from "../config.js";
 import { toExtension } from "../utils.js";
 
 export default class OrganzationService {
@@ -10,8 +11,7 @@ export default class OrganzationService {
      * @returns 
      */
     insert = async (ctx) => {
-        const entity = ctx.body;
-        console.log(ctx);
+        const entity = ctx.request.body;
 
         let organization = {};
         // 检查参数合法性
@@ -27,6 +27,8 @@ export default class OrganzationService {
         const r = ctx.organizationDao.insert(organization);
         const id = r.lastInsertRowid;
 
+        await ctx.fileClient.mkdir(`${config.web.staticDir}/organizations`);
+
         const filename = entity.filename || '';
         if (filename.length === 0) {
             throw error.files.NotFound;
@@ -34,8 +36,8 @@ export default class OrganzationService {
         const extension = toExtension(filename);
         const dst = `organizations/${id}${extension}`;
         const src = filename;
-        await ctx.filesClient.move(src, dst);
-
+        await ctx.fileClient.move(src, dst);
+        
         return ctx.organizationDao.findById(id);
     }
 
@@ -47,7 +49,7 @@ export default class OrganzationService {
      */
     update = async (ctx) => {
         const id = parseInt(ctx.params.id);
-        const entity = ctx.body;
+        const entity = ctx.request.body;
         // 检查参数合法性
         let organization = ctx.organizationDao.findById(id);
         if (!organization) {
@@ -74,7 +76,7 @@ export default class OrganzationService {
             const extension = toExtension(filename);
             const dst = `organizations/${organization.id}${extension}`;
             const src = filename;
-            await ctx.filesClient.move(src, dst);
+            await ctx.fileClient.move(src, dst);
         }
 
         return ctx.organizationDao.findById(id);
@@ -85,7 +87,7 @@ export default class OrganzationService {
         ctx.organizationDao.deleteById(id);
         
         const file = `organizations/${id}.webp`;
-        await ctx.filesClient.delete(file);
+        await ctx.fileClient.delete(file);
     }
     
     findAll = (ctx) => {

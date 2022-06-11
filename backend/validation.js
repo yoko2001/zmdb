@@ -31,7 +31,7 @@ export default {
             upperLimit: 20
         }
     },
-    subtitles: {
+    subtitle: {
         content: {
             lowerLimit: 1
         }

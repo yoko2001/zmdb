@@ -1,6 +1,7 @@
 import error from "../error.js";
 import validation from "../validation.js";
 import {toExtension} from '../utils.js';
+import config from "../config.js";
 
 export default class AuthorService {
 
@@ -11,7 +12,7 @@ export default class AuthorService {
      * @param {filename} 作者头像文件名
      */
     insert = async (ctx) => {
-        const entity = ctx.state.entity;
+        const entity = ctx.request.body;
         let author = {};
         // 检查参数合法性
         const organizationId = entity.organizationId;
@@ -30,16 +31,21 @@ export default class AuthorService {
         author.name = name;
         author.uid = entity.uid || '';
 
-        ctx.authorDao.insert(author);
+        const r = ctx.authorDao.insert(author);
+        const id = r.lastInsertRowid;
+
+        await ctx.fileClient.mkdir(`${config.web.staticDir}/authors/${organizationId}`);
 
         const filename = entity.filename || '';
         if (filename.length === 0) {
             throw error.files.NotFound;
         }
         const extension = toExtension(filename);
-        const dst = `authors/${organizationId}/${r.lastInsertRowid}${extension}`;
-        const src = entity.filename;
-        await ctx.filesClient.move(src, dst);
+        const dst = `authors/${organizationId}/${id}${extension}`;
+        const src = filename;
+        await ctx.fileClient.move(src, dst);
+
+        return ctx.authorDao.findById(id);
     }
 
     /**
@@ -49,9 +55,9 @@ export default class AuthorService {
      * @param {filename} 作者的头像
      */
     update = async (ctx) => {
-        const entity = ctx.state.entity;
+        const id = parseInt(ctx.params.id);
+        const entity = ctx.request.body;
         // 检查参数合法性
-        const id = entity.id;
         let author = ctx.authorDao.findById(id);
         if (!author) {
             throw error.author.NotFound;
@@ -85,14 +91,15 @@ export default class AuthorService {
                 throw error.files.NotFound;
             }
             const extension = toExtension(filename);
-            const dst = `authors/${organizationId}/${r.lastInsertRowid}${extension}`;
-            const src = entity.filename;
-            await ctx.filesClient.move(src, dst);
+            const dst = `authors/${organizationId}/${id}${extension}`;
+            const src = filename;
+            await ctx.fileClient.move(src, dst);
         }
+
+        return ctx.authorDao.findById(id);
     }
 
     deleteById = async (ctx) => {
-        const entity = ctx.state.entity;
         const id = entity.id;
         const author = ctx.authorDao.findById(id);
         ctx.authorDao.deleteById(id);
@@ -102,8 +109,7 @@ export default class AuthorService {
     }
 
     findByOrganizationId = (ctx) => {
-        const req = ctx.request;
-        const organizationId = parseInt(req.params.organizationId);
+        const organizationId = parseInt(ctx.request.params.organizationId);
         return ctx.authorDao.findByOrganizationId(organizationId);
     }
 

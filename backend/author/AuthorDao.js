@@ -10,6 +10,19 @@ export default class AuthorDao {
         this.db.exec(sql);
     }
 
+    __toDTO = (entity) => {
+        return {
+            id: entity.author_id,
+            organizationId: entity.author_organizationId,
+            uid: entity.author_uid,
+            name: entity.author_name,
+            organization: {
+                id: entity.organization_id,
+                name: entity.organization_name
+            }
+        }
+    }
+
     insert = (author) => {
         const sql = 'INSERT INTO author(organizationId, uid, name) VALUES(@organizationId, @uid, @name)';
         const stmt = this.db.prepare(sql);
@@ -48,18 +61,7 @@ export default class AuthorDao {
                     'ORDER BY author.id ASC';
 
         const stmt = this.db.prepare(sql);
-        return stmt.all(organizationId).map(item => {
-            return {
-                id: item.author_id,
-                organizationId: item.author_organizationId,
-                uid: item.author_uid,
-                name: item.author_name,
-                organization: {
-                    id: item.organization_id,
-                    name: item.organization_name
-                }
-            }
-        });
+        return stmt.all(organizationId).map(item => this.__toDTO(item));
     }
 
     findAll = () => {
@@ -74,19 +76,6 @@ export default class AuthorDao {
                     'LEFT JOIN organization ON author.organizationId=organization.id ' +
                     'ORDER BY author.id DESC';
         const stmt = this.db.prepare(sql);
-        const r = stmt.all();
-        console.log(r);
-        return stmt.all().map(item => {
-            return {
-                id: item.author_id,
-                organizationId: item.author_organizationId,
-                uid: item.author_uid,
-                name: item.author_name,
-                organization: {
-                    id: item.organization_id,
-                    name: item.organization_name
-                }
-            }
-        });
+        return stmt.all().map(item => this.__toDTO(item));
     }
 }

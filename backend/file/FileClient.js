@@ -1,13 +1,17 @@
-import { unlink, writeFile, rename } from 'fs/promises';
+import { unlink, writeFile, rename, mkdir } from 'fs/promises';
 import Sharp from "sharp";
 import config from '../config.js';
 
-export default class FilesClient {
+export default class FileClient {
 
     constructor() {}
 
     save = async (path, content) => {
         await writeFile(`${config.web.staticDir}/${path}`, content);
+    }
+
+    mkdir = async (path) => {
+        await mkdir(path, { recursive: true });
     }
 
     move = async (src, dst) => {
