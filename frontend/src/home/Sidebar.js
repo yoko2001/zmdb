@@ -10,20 +10,20 @@ export const Sidebar = () => {
     const params = useParams();
 
     if (!params.organizationId) {
-        return <Navigate to="/organizations/1" replace={false} />
+        return <Navigate to="/organizations/1" replace={true} />
     }
     return (
         <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
-            <List component='nav'>
+            <List sx={{ p:0 }} component='nav'>
                 { organizations.map(organization => (
                     <ListItem disablePadding key={organization.id}>
                         <ListItemButton 
                             component={RouterLink}
                             to={`/organizations/${organization.id}`}
-                            selected={organization.id === params.organizationId}
+                            selected={organization.id === parseInt(params.organizationId)}
                         >
                             <ListItemAvatar>
-                                <Avatar src={`${config.url.file}/organizations/${organization.id}.webp`}/>
+                                <Avatar src={`${config.url.file}/organizations/${organization.id}@100x100.webp`}/>
                             </ListItemAvatar>
                             <ListItemText primary={organization.name} />
                         </ListItemButton>

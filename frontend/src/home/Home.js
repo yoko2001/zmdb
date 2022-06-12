@@ -60,7 +60,7 @@ export const Home = () => {
                 setClips(clips);
             });
         }
-    }, [params.organizationId]);
+    }, [params]);
 
     const value = {
         organizations,

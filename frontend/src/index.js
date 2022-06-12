@@ -11,7 +11,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.Fragment>
         <CssBaseline />
-        <BrowserRouter>
+        <BrowserRouter forceRefresh={true} >
             <Routes>
                 <Route path='/' element={<App />}>
                     <Route path='/' element={<Home />}>

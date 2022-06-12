@@ -9,7 +9,7 @@ export const MainPanel = () => {
             <Box sx={{ width: '100%' }}>
                 <SearchBox />
             </Box>
-            <Box sx={{ width: '100%' }}>
+            <Box sx={{ width: '100%', mt:'1rem' }}>
                 <Box sx={{ flexGrow: 1 }}>
                     <ClipTable />
                 </Box>

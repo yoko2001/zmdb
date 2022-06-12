@@ -26,14 +26,14 @@ export const AuthorsSelector = () => {
                     renderValue={selectedAuthors => (
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                             { selectedAuthors.map(selectedAuthor => (
-                                <Avatar sx={{ width: '1.5rem', height: '1.5rem'}} key={selectedAuthor.id} src={`${config.url.file}/authors/${selectedAuthor.organizationId}/${selectedAuthor.id}.webp`} />
+                                <Avatar sx={{ width: '1.5rem', height: '1.5rem'}} key={selectedAuthor.id} src={`${config.url.file}/authors/${selectedAuthor.organizationId}/${selectedAuthor.id}@60x60.webp`} />
                             ))}
                         </Box>
                     )}
                 >
                     { authors.map(author => (
                         <MenuItem key={author.id} value={author} >
-                            <Avatar sx={{ width: '1.5rem', height: '1.5rem', mr: '0.5rem'}} src={`${config.url.file}/authors/${author.organizationId}/${author.id}.webp`} />{author.name}
+                            <Avatar sx={{ width: '1.5rem', height: '1.5rem', mr: '0.5rem'}} src={`${config.url.file}/authors/${author.organizationId}/${author.id}@60x60.webp`} />{author.name}
                         </MenuItem>
                     ))}
                 </Select>

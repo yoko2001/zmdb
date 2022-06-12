@@ -32,7 +32,7 @@ export const ClipTable = () => {
         { field: 'time', headerName: '时间', flex:1, headerAlign:'center', align:'center' },
         { field: 'author', headerName: '直播间', flex:0.7, headerAlign:'center', align:'center', renderCell: params=> (
             params.value &&
-            <Link href={`${config.url.author}/${params.value.uid}`} underline='none' rel='noopener' target='_blank'><Avatar sx={{ width:'1.5rem', height:'1.5rem'}} src={`${config.url.file}/authors/${params.value.organizationId}/${params.value.id}.webp`} alt={params.value.name} /></Link>
+            <Link href={`${config.url.author}/${params.value.uid}`} underline='none' rel='noopener' target='_blank'><Avatar sx={{ width:'1.5rem', height:'1.5rem'}} src={`${config.url.file}/authors/${params.value.organizationId}/${params.value.id}@60x60.webp`} alt={params.value.name} /></Link>
         )},
         { field: 'bv', headerName: 'BV号', flex: 1.5, headerAlign:'center', align:'center', renderCell: (params) => (
             params.value &&
@@ -40,7 +40,7 @@ export const ClipTable = () => {
         )},
         { field: 'avatar', headerName: '封面', flex:1.2, headerAlign:'center', align:'center', renderCell: params=> (
             params.value && 
-            <Avatar sx={{ width:'5rem', height:'2.2rem'}} variant='square' src={`${config.url.file}/clips/${params.value.author.organizationId}/${params.value.author.id}/${params.value.id}.webp`}/>
+            <Avatar sx={{ width:'5rem', height:'2.2rem'}} variant='square' src={`${config.url.file}/clips/${params.value.author.organizationId}/${params.value.author.id}/${params.value.id}@120x60.webp`}/>
         )},
         { field:'title', headerName:'标题', flex:4, renderCell:params => (
             params.value &&
