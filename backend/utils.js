@@ -1,3 +1,5 @@
+import { pinyin } from 'pinyin-pro';
+
 export class Srt {
 
     constructor() {}
@@ -21,7 +23,8 @@ export class Srt {
                     lineId: lines[i],
                     start: this.toTS(duration[0]),
                     end: this.toTS(duration[1]),
-                    content: lines[i + 2]
+                    content: lines[i + 2],
+                    pinyinContent: pinyin(lines[i + 2], {toneType:'num'})
                 });
             }
         }

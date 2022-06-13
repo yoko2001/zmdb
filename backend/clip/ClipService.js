@@ -1,3 +1,4 @@
+import { pinyin } from 'pinyin-pro';
 import error from "../error.js";
 import validation from "../validation.js";
 import config from "../config.js";
@@ -150,26 +151,44 @@ export default class ClipService {
 
     find = (ctx) => {
         const req = ctx.request;
-        if (req.query.authorIds && req.query.content) {
-            const authorIds = req.query.authorIds.split(",") || [];
-            if (authorIds.length < validation.clip.authors.lowerLimit) {
-                throw error.clip.authors.TooLittle;
-            }
-            if (authorIds.length > validation.clip.authors.upperLimit) {
-                throw error.clip.authors.TooMuch;
-            }
-
-            // TODO 删除content中的符号字符
-            const content = req.query.content || '';
-            if (content.length < validation.clip.content.lowerLimit) {
-                throw error.clip.content.LengthTooShort;
-            }
-            if (content.length > validation.clip.content.upperLimit) {
-                throw error.clip.content.LengthTooLong;
-            }
-            return ctx.clipDao.findByAuthorIdsAndContent(authorIds, content);
-        } else {
-            return ctx.clipDao.findAll();
+        const authorIds = req.query.authorIds.split(",") || [];
+        if (authorIds.length < validation.clip.authors.lowerLimit) {
+            throw error.clip.authors.TooLittle;
         }
+        if (authorIds.length > validation.clip.authors.upperLimit) {
+            throw error.clip.authors.TooMuch;
+        }
+
+        // TODO 删除content中的符号字符
+        const keyword = req.query.keyword || '';
+        if (keyword.length < validation.clip.content.lowerLimit) {
+            throw error.clip.content.LengthTooShort;
+        }
+        if (keyword.length > validation.clip.content.upperLimit) {
+            throw error.clip.content.LengthTooLong;
+        }
+
+        const pinyinKeyword = pinyin(keyword, {toneType:'num'});
+        const r1 = ctx.clipDao.findByAuthorIdsAndKeyword(authorIds, keyword);
+        const r2 = ctx.clipDao.findByAuthorIdsAndPinyinKeyword(authorIds, pinyinKeyword);
+        r1.forEach(item => {
+            item.matchMode = 1;
+        });
+        r2.forEach(item => {
+            item.matchMode = 2;
+        });
+        let r = r1;
+        r2.forEach(clip2 => {
+            for (let clip1 of r1) {
+                if (clip2.id === clip1.id) {
+                    return;
+                }
+            }
+            r.push(clip2);
+        });
+        r.sort((a, b) => {
+            a.datetime - b.datetime;
+        });
+        return r;
     }
 }
