@@ -96,8 +96,6 @@ export default class SubtitleService {
                         if (matchedKeyword !== keyword) {
                             subtitle.markedContent = subtitle.markedContent.replaceAll(`<${matchedKeyword}>`, matchedKeyword);
                             subtitle.markedContent = subtitle.markedContent.replaceAll(matchedKeyword, `<${matchedKeyword}>`);
-
-                            console.log(subtitle.markedContent);
                         }
                     }
                 }
