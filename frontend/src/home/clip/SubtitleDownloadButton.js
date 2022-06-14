@@ -7,7 +7,7 @@ export const SubtitleDownloadButton = ({ clip }) => {
 
     return (
         <Tooltip title='下载字幕文件'>
-            <IconButton color='primary' size='xs' component='a' href={`${config.url.api}/subtitles/${clip.author.organizationId}/${clip.authorId}/${clip.id}.srt`} target='_blank'>
+            <IconButton color='primary' size='xs' component='a' href={`${config.url.file}/srt/${clip.author.organizationId}/${clip.authorId}/${clip.id}.srt`} target='_blank'>
                 <SubtitlesOutlinedIcon />
             </IconButton>
         </Tooltip>
