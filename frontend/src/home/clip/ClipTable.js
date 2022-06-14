@@ -9,7 +9,6 @@ import { SubtitleDownloadButton } from './SubtitleDownloadButton';
 export const ClipTable = () => {
 
     const { selectedAuthors, clips } = React.useContext(context);
-    const subtitleMapRef = React.useRef(new Map());
 
     const rows = clips
         .filter(clip => selectedAuthors.map(author => author.id).includes(clip.authorId))
@@ -44,12 +43,12 @@ export const ClipTable = () => {
         )},
         { field:'title', headerName:'标题', flex:4, renderCell:params => (
             params.value &&
-            <TitleButton clip={params.value} subtitleMap={subtitleMapRef.current} />
+            <TitleButton clip={params.value} />
         )},
         { field:'operations', headerName:'操作', flex:1.2, headerAlign:'center', align:'center',renderCell:params => (
             params.value &&
             <Stack direction='row' spacing={0.5}>
-                <SubtitleDownloadButton clip={params.value} subtitleMap={subtitleMapRef.current} />
+                <SubtitleDownloadButton clip={params.value} />
             </Stack>
         )}
     ];

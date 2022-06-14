@@ -26,7 +26,7 @@ export const Home = () => {
             setSearchWord(searchWord);
             const authorIds = selectedAuthors.map(selectedAuthor => selectedAuthor.id).join(',');
             setLoading(true);
-            ClipApi.findByAuthorIdsAndContent(authorIds, searchWord).then(res => {
+            ClipApi.find(authorIds, searchWord).then(res => {
                 const clips = res.data || [];
                 setClips(clips);
                 setLoading(false);
@@ -34,7 +34,7 @@ export const Home = () => {
                     type: 'success',
                     content: `总共查询到${clips.length}条直播记录`
                 });
-            }).catch(exception => {
+            }).catch(ex => {
                 setLoading(false);
             });
         }

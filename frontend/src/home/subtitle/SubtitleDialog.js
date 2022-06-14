@@ -3,48 +3,32 @@ import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material
 import Button from '@mui/material/Button'
 import { SubtitleButtonGroup } from './SubtitleButtonGroup';
 import { SubtitleTable } from './SubtitleTable';
-import { context } from '../context';
 
 export const SubtitleDialog = ({clip, subtitles, status, setStatus}) => {
 
-    const { searchWord } = React.useContext(context);
-    const [match, setMatch] = React.useState(0);
-    const [matches, setMatches] = React.useState([]);
-    const [markedSubtitles, setMarkedSubtitles] = React.useState([]);
+    const [match, setMatch] = React.useState(-1);
     
     const onClose = () => {
-        setMatch(0);
+        setMatch(-1);
         setStatus(false);
     }
 
     React.useEffect(() => {
-        if (searchWord.length > 0) {
-            let matches = [];
-            subtitles.forEach((subtitle, index) => {
-                if (subtitle.content.indexOf(searchWord) !== -1) {
-                    matches.push(index);
-                }
-            });
-            setMatches(matches);
-        }
-        const markedSubtitles = subtitles.map(subtitle => {
-            return {
-                lineId: subtitle.lineId,
-                start: subtitle.start,
-                end: subtitle.end,
-                content: subtitle.content.replaceAll(searchWord, `<mark>${searchWord}</mark>`)
-            };
+        subtitles.forEach(subtitle => {
+            subtitle.markedContent = subtitle.markedContent
+                                        .replaceAll('{', '<mark style="background-color: #C4F2CE">')
+                                        .replaceAll('}', '</mark>')
+                                        .replaceAll('[', '<mark>')
+                                        .replaceAll(']', '</mark>');
+            
         });
-        setMarkedSubtitles(markedSubtitles);
-    }, [searchWord, subtitles]);
-
-    React.useEffect(() => {
-        if (status) {
-            if (matches.length > 0) {
-                setMatch(matches[0]);
+        for (let i = 0; i < subtitles.length; ++i) {
+            if (subtitles[i].matchMode === 1 || subtitles[i].matchMode === 2) {
+                setMatch(i);
+                break;
             }
         }
-    }, [status, matches]);
+    }, [subtitles]);
 
     return (
         <Dialog fullscreen='true' fullWidth={true} maxWidth='lg' open={status} onClose={onClose}>
@@ -52,8 +36,8 @@ export const SubtitleDialog = ({clip, subtitles, status, setStatus}) => {
                 {clip.title}
             </DialogTitle>
             <DialogContent>
-                { matches.length > 0 ? <SubtitleButtonGroup matches={matches} setMatch={setMatch} /> : <></>}
-                <SubtitleTable match={match} clip={clip} subtitles={markedSubtitles} />                
+                {match >= 0 && <SubtitleButtonGroup subtitles={subtitles} match={match} setMatch={setMatch} />}
+                <SubtitleTable match={match} clip={clip} subtitles={subtitles} />                
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>关闭</Button>

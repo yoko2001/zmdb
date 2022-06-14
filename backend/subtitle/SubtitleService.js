@@ -94,8 +94,8 @@ export default class SubtitleService {
                         const index = whitespaceTable[pinyinIndex];
                         const matchedKeyword = subtitle.content.substring(index, index + keyword.length);
                         if (matchedKeyword !== keyword) {
-                            subtitle.markedContent = subtitle.markedContent.replaceAll(`<${matchedKeyword}>`, matchedKeyword);
-                            subtitle.markedContent = subtitle.markedContent.replaceAll(matchedKeyword, `<${matchedKeyword}>`);
+                            subtitle.markedContent = subtitle.markedContent.replaceAll(`{${matchedKeyword}}`, matchedKeyword);
+                            subtitle.markedContent = subtitle.markedContent.replaceAll(matchedKeyword, `{${matchedKeyword}}`);
                         }
                     }
                 }

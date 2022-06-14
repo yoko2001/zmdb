@@ -7,9 +7,9 @@ export default class ClipApi {
         return axios.get(`${config.url.api}/organizations/${organizationId}/clips`);
     }
 
-    static findByAuthorIdsAndContent = (authorIds, content) => {
+    static find = (authorIds, keyword) => {
         return axios.get(`${config.url.api}/clips`, {
-            params: { authorIds, content }
+            params: { authorIds, keyword }
         });
     }
 }

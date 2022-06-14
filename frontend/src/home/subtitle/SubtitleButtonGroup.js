@@ -3,26 +3,26 @@ import { ButtonGroup, IconButton } from '@mui/material';
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import ArrowCircleDownOutlinedIcon from '@mui/icons-material/ArrowCircleDownOutlined';
 
-export const SubtitleButtonGroup = ({matches, setMatch}) => {
-
-    const [cursor, setCursor] = React.useState(0);
+export const SubtitleButtonGroup = ({subtitles, match, setMatch}) => {
 
     const onMatchDown = (e) => {
-        if (cursor < matches.length - 1) {
-            setCursor(prev => {
-                const curr = prev + 1;
-                setMatch(matches[curr]);
-                return curr;
-            });
+        for (let i = match + 1; i < subtitles.length; ++i) {
+            if (subtitles[i].matchMode !== 1 && subtitles[i].matchMode !== 2) {
+                continue;
+            }
+            console.log(`match:${i}`);
+            setMatch(i);
+            break;
         }
     }
+
     const onMatchUp = (e) => {
-        if (cursor > 0) {
-            setCursor(prev => {
-                const curr = prev - 1;
-                setMatch(matches[curr]);
-                return curr;
-            });
+        for (let i = match - 1; i >= 0; --i) {
+            if (subtitles[i].matchMode !== 1 && subtitles[i].matchMode !== 2) {
+                continue;
+            }
+            setMatch(i);
+            break;
         }
     }
 

@@ -9,8 +9,10 @@ export const SubtitleTable = ({match, clip, subtitles}) => {
     const listRef = React.useRef();
 
     React.useEffect(() => {
-        listRef.current.scrollToItem(match);
-    });
+        if (match >= 0) {
+            listRef.current.scrollToItem(match);
+        }
+    }, [match]);
 
     const Row = ({index, style, data}) => {
         const backgroundColor = match === data.subtitles[index].lineId - 1 ? '#F5F5F5' : '#FFFFFF';
@@ -20,7 +22,7 @@ export const SubtitleTable = ({match, clip, subtitles}) => {
                     <Box sx={{ flex:1 }}>{data.subtitles[index].lineId}</Box>
                     <Box sx={{ flex:3 }}><Link target='_blank' underline="hover" rel ="noreferrer" href={`${config.url.clip}/${data.clip.bv}?start_progress=${data.subtitles[index].start}`}>{toTime(data.subtitles[index].start)}</Link></Box>
                     <Box sx={{ flex:3 }}><Link target='_blank' underline="hover" rel ="noreferrer" href={`${config.url.clip}/${data.clip.bv}?start_progress=${data.subtitles[index].end}`}>{toTime(data.subtitles[index].end)}</Link></Box>
-                    <Box sx={{ flex:14 }} dangerouslySetInnerHTML={{__html:data.subtitles[index].content}} />
+                    <Box sx={{ flex:14 }} dangerouslySetInnerHTML={{__html:data.subtitles[index].markedContent}} />
                 </Box>
             </div>
         )

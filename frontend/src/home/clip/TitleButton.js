@@ -1,40 +1,39 @@
 import * as React from 'react';
 import { Button } from '@mui/material';
 import { context as globalContext } from '../../context';
+import { context } from '../context';
 import SubtitlesApi from '../../api/SubtitleApi';
 import { SubtitleDialog } from '../subtitle/SubtitleDialog';
 
-export const TitleButton = ({clip, subtitleMap}) => {
+export const TitleButton = ({clip}) => {
 
     const [status, setStatus] = React.useState(false);
+    const [subtitles, setSubtitles] = React.useState([]);
     const {setLoading, onMessage} = React.useContext(globalContext);
+    const { searchWord } = React.useContext(context);
 
     const onClick = () => {
-        if (!subtitleMap.has(clip.id)) {
-            setLoading(true);
-            SubtitlesApi.findByClipId(clip.id).then(res => {
-                const subtitles = res.data || [];
-                subtitleMap.set(clip.id, subtitles);
-                setLoading(false);
-                setStatus(true);
-            }).catch(res => {
-                console.log(res);
-                setLoading(false);
-                const error = res.response.data;
-                onMessage({
-                    type: 'error',
-                    content: `[${error.code}] ${error.message}`
-                });
-            });
-        } else {
+        setLoading(true);
+        SubtitlesApi.findByClipId(clip.id, searchWord).then(res => {
+            let subtitles = res.data || [];
+            setSubtitles(subtitles);
+            setLoading(false);
             setStatus(true);
-        }
+        }).catch(ex => {
+            console.log(ex);
+            setLoading(false);
+            const error = ex.response.data;
+            onMessage({
+                type: 'error',
+                content: `[${error.code}] ${error.message}`
+            });
+        });
     }
 
     return (
         <React.Fragment>
             <Button variant='text' onClick={onClick}>{clip.title}</Button>
-            <SubtitleDialog status={status} setStatus={setStatus} clip={clip} subtitles={subtitleMap.get(clip.id) || []} />
+            <SubtitleDialog status={status} setStatus={setStatus} clip={clip} subtitles={subtitles} />
         </React.Fragment>
     )
 }
