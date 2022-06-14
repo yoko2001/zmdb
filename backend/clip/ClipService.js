@@ -186,7 +186,7 @@ export default class ClipService {
             }
             r.push(clip2);
         });
-        r.sort((a, b) => {
+        r = r.sort((a, b) => {
             a.datetime - b.datetime;
         });
         return r;
