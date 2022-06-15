@@ -2,6 +2,7 @@ import { pinyin } from 'pinyin-pro';
 import error from '../error.js'
 import validation from '../validation.js';
 import config from '../config.js';
+import { mark } from '../utils.js';
 
 export default class SubtitleService {
 
@@ -13,7 +14,6 @@ export default class SubtitleService {
     insert = async (ctx) => {
         const clipId = parseInt(ctx.params.clipId);
         let content = ctx.request.body || '';
-        console.log(ctx.request.body);
         // 检查参数合法性
         const clip = ctx.clipDao.findById(clipId);
         if (!clip) {
@@ -62,53 +62,29 @@ export default class SubtitleService {
     findByClipId = async (ctx) => {
         const req = ctx.request;
         const clipId = parseInt(req.params.clipId);
-        let r = ctx.subtitleDao.findByClipId(clipId);
-        r.forEach(item => {
-            item.markedContent = item.content;
+        let subtitles = ctx.subtitleDao.findByClipId(clipId);
+        subtitles.forEach(subtitle => {
+            subtitle.markedContent = subtitle.content;
         });
         if (req.query.keyword) {
             const keyword = req.query.keyword;
             const pinyinKeyword = pinyin(keyword, {toneType:'num'});
-            const r1 = ctx.subtitleDao.findLineIdByClipIdAndContent(clipId, keyword);
-            const r2 = ctx.subtitleDao.findLineIdByClipIdAndPinyinContent(clipId, pinyinKeyword);
-            r1.forEach(item => {
-                const subtitle = r[item.lineId - 1];
-                subtitle.matchMode = 1;
-                subtitle.markedContent = subtitle.markedContent.replaceAll(keyword, `[${keyword}]`);
-            });
-            r2.forEach(item => {
-                const subtitle = r[item.lineId - 1];
-                let sum = 0;
-                let whitespaceTable = new Array(subtitle.pinyinContent.length);
-                for (let i = 0; i < subtitle.pinyinContent.length; i++) {
-                    whitespaceTable[i] = sum;
-                    if (subtitle.pinyinContent.charCodeAt(i) === ' '.charCodeAt(0)) {
-                        sum++;
-                    }
-                }
-                
-                let pinyinIndex = 0;
-                while (pinyinIndex !== -1) {
-                    pinyinIndex = subtitle.pinyinContent.indexOf(pinyinKeyword, pinyinIndex + 1);
-                    if (pinyinIndex !== -1) {
-                        const index = whitespaceTable[pinyinIndex];
-                        const matchedKeyword = subtitle.content.substring(index, index + keyword.length);
-                        if (matchedKeyword !== keyword) {
-                            subtitle.markedContent = subtitle.markedContent.replaceAll(`{${matchedKeyword}}`, matchedKeyword);
-                            subtitle.markedContent = subtitle.markedContent.replaceAll(matchedKeyword, `{${matchedKeyword}}`);
-                        }
-                    }
-                }
-
-                if (!subtitle.matchMode) {
+            const rows = ctx.subtitleDao.findLineIdByClipIdAndKeyword(clipId, keyword, pinyinKeyword);
+            rows.forEach(row => {
+                const subtitle = subtitles[row.lineId - 1];
+                subtitle.markedContent = mark(subtitle.markedContent, keyword);
+                if (subtitle.markedContent.indexOf('{') !== -1) {
                     subtitle.matchMode = 2;
+                }
+                if (subtitle.markedContent.indexOf('[') !== -1) {
+                    subtitle.matchMode = 1;
                 }
             });
         }
-        r.forEach(item => {
+        subtitles.forEach(item => {
             delete item.content;
             delete item.pinyinContent;
         });
-        return r;
+        return subtitles;
     }
 }

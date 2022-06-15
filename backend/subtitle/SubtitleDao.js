@@ -43,14 +43,10 @@ export default class SubtitleDao {
         return stmt.all(clipId);
     }
 
-    findLineIdByClipIdAndContent = (clipId, content) => {
-        const sql = 'SELECT lineId FROM subtitle WHERE clipId=? AND content LIKE ? ORDER BY lineId ASC';
+
+    findLineIdByClipIdAndKeyword = (clipId, keyword, pinyinKeyword) => {
+        const sql = 'SELECT lineId FROM subtitle WHERE clipId=? AND content LIKE ? OR pinyinContent LIKE ? ORDER BY lineId ASC';
         const stmt = this.db.prepare(sql);
-        return stmt.all(clipId, '%' + content + '%');
-    }
-    findLineIdByClipIdAndPinyinContent = (clipId, pinyinContent) => {
-        const sql = 'SELECT lineId FROM subtitle WHERE clipId=? AND pinyinContent LIKE ? ORDER BY lineId ASC';
-        const stmt = this.db.prepare(sql);
-        return stmt.all(clipId, '%' + pinyinContent + '%');
+        return stmt.all(clipId, '%' + keyword + '%', '%' + pinyinKeyword + '%');
     }
 }

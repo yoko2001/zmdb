@@ -171,23 +171,21 @@ export default class ClipService {
         const pinyinKeyword = pinyin(keyword, {toneType:'num'});
         const r1 = ctx.clipDao.findByAuthorIdsAndKeyword(authorIds, keyword);
         const r2 = ctx.clipDao.findByAuthorIdsAndPinyinKeyword(authorIds, pinyinKeyword);
+        const clipIds = new Set();
+        const r = [];
         r1.forEach(item => {
+            clipIds.add(item.id);
             item.matchMode = 1;
+            r.push(item);
         });
         r2.forEach(item => {
-            item.matchMode = 2;
-        });
-        let r = r1;
-        r2.forEach(clip2 => {
-            for (let clip1 of r1) {
-                if (clip2.id === clip1.id) {
-                    return;
-                }
+            if (!clipIds.has(item.id)) {
+                item.matchMode = 2;
+                r.push(item);
             }
-            r.push(clip2);
         });
-        r = r.sort((a, b) => {
-            b.datetime - a.datetime;
+        r.sort((a, b) => {
+            b.datetime < a.datetime;
         });
         return r;
     }
