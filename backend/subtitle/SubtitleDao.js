@@ -45,7 +45,7 @@ export default class SubtitleDao {
 
 
     findLineIdByClipIdAndKeyword = (clipId, keyword, pinyinKeyword) => {
-        const sql = 'SELECT lineId FROM subtitle WHERE clipId=? AND content LIKE ? OR pinyinContent LIKE ? ORDER BY lineId ASC';
+        const sql = 'SELECT lineId FROM subtitle WHERE clipId=? AND (content LIKE ? OR pinyinContent LIKE ?) ORDER BY lineId ASC';
         const stmt = this.db.prepare(sql);
         return stmt.all(clipId, '%' + keyword + '%', '%' + pinyinKeyword + '%');
     }
