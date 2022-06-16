@@ -8,10 +8,11 @@ import { SubtitleDownloadButton } from './SubtitleDownloadButton';
 
 export const ClipTable = () => {
 
-    const { selectedAuthors, clips } = React.useContext(context);
+    const { selectedAuthors, clips, pinyinChecked } = React.useContext(context);
 
     const rows = clips
         .filter(clip => selectedAuthors.map(author => author.id).includes(clip.authorId))
+        .filter(clip => pinyinChecked ? true : (clip.matchMode === undefined || clip.matchMode === 1))
         .map(clip => {
             const datetime = clip.datetime.split(' ');
             return {

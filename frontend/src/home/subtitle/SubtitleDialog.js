@@ -3,9 +3,11 @@ import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material
 import Button from '@mui/material/Button'
 import { SubtitleButtonGroup } from './SubtitleButtonGroup';
 import { SubtitleTable } from './SubtitleTable';
+import { context } from '../context';
 
 export const SubtitleDialog = ({clip, subtitles, status, setStatus}) => {
 
+    const { pinyinChecked } = React.useContext(context);
     const [match, setMatch] = React.useState(-1);
     
     const onClose = () => {
@@ -23,12 +25,19 @@ export const SubtitleDialog = ({clip, subtitles, status, setStatus}) => {
             
         });
         for (let i = 0; i < subtitles.length; ++i) {
-            if (subtitles[i].matchMode === 1 || subtitles[i].matchMode === 2) {
-                setMatch(i);
-                break;
+            if (pinyinChecked) {
+                if (subtitles[i].matchMode === 1 || subtitles[i].matchMode === 2) {
+                    setMatch(i);
+                    break;
+                }
+            } else {
+                if (subtitles[i].matchMode === 1) {
+                    setMatch(i);
+                    break;
+                }
             }
         }
-    }, [subtitles]);
+    }, [pinyinChecked, subtitles]);
 
     return (
         <Dialog fullscreen='true' fullWidth={true} maxWidth='lg' open={status} onClose={onClose}>

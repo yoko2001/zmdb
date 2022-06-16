@@ -16,6 +16,7 @@ export const Home = () => {
     const [selectedAuthors, setSelectedAuthors] = React.useState([]);
     const [searchWord, setSearchWord] = React.useState('');
     const [clips, setClips] = React.useState([]);
+    const [pinyinChecked, setPinyinChecked] = React.useState(true);
 
     const { setLoading, onMessage } = React.useContext(globalContext);
 
@@ -70,6 +71,8 @@ export const Home = () => {
         clips,
         onSearch,
         setSelectedAuthors,
+        pinyinChecked,
+        setPinyinChecked
     };
 
     return (
