@@ -35,5 +35,11 @@ export default {
         content: {
             lowerLimit: 1
         }
+    },
+    task: {
+        interval: {
+            lowerLimit: 30,
+            upperLimit: 600
+        }
     }
 }

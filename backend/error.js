@@ -124,8 +124,42 @@ export default {
                 message: `字幕内容不能小于${validation.subtitle.content.lowerLimit}字符`
             },
             ParseError: {
-                code: 400100122,
+                code: 400100132,
                 message: `字幕文本解析错误`
+            }
+        }
+    },
+    task: {
+        NotFound: {
+            code: 400100140,
+            message: '任务不存在'
+        },
+        start: {
+            Illegal: {
+                code: 400100141,
+                message: `start不是一个整数`
+            }
+        },
+        end: {
+            Illegal: {
+                code: 400100142,
+                message: `end不是一个整数`
+            }
+        },
+        interval: {
+            TooShort: {
+                code: 400100143,
+                message: `时间间隔太短`
+            },
+            TooLong: {
+                code: 400100144,
+                message: `时间间隔太长`
+            }
+        },
+        status: {
+            Illegal: {
+                code: 400100145,
+                message: `状态值非法`
             }
         }
     }

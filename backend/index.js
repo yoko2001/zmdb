@@ -11,10 +11,12 @@ import OrganizationDao from './organization/OrganizationDao.js';
 import AuthorDao from './author/AuthorDao.js';
 import ClipDao from './clip/ClipDao.js';
 import SubtitleDao from './subtitle/SubtitleDao.js'
+import TaskDao from './task/TaskDao.js';
 import OrganzationService from './organization/OrganizationService.js';
 import AuthorService from './author/AuthorService.js';
 import ClipService from './clip/ClipService.js';
 import SubtitleService from './subtitle/SubtitleService.js';
+import TaskService from './task/TaskService.js';
 import FileService from './file/FileServices.js';
 
 const app = new Koa({ proxy: true });
@@ -29,11 +31,13 @@ app.context.organizationDao = new OrganizationDao(db);
 app.context.authorDao = new AuthorDao(db);
 app.context.clipDao = new ClipDao(db);
 app.context.subtitleDao = new SubtitleDao(db);
+app.context.taskDao = new TaskDao(db);
 
 app.context.organizationService = new OrganzationService();
 app.context.authorService = new AuthorService();
 app.context.clipService = new ClipService();
 app.context.subtitleService = new SubtitleService();
+app.context.taskService = new TaskService();
 app.context.fileService = new FileService();
 
 /**
@@ -94,6 +98,19 @@ router.post('/clips/:clipId/subtitles', async ctx => {
 });
 router.get('/clips/:clipId/subtitles', async ctx => {
     ctx.body = await ctx.subtitleService.findByClipId(ctx) || [];
+});
+
+/**
+ * tasks
+ */
+ router.post('/tasks', async ctx => {
+    ctx.body = await ctx.taskService.insert(ctx);
+});
+router.put('/tasks/:id', async ctx => {
+    ctx.body = await ctx.taskService.updateStatus(ctx);
+});
+router.get('/tasks', async ctx => {
+    ctx.body = await ctx.taskService.findByIds(ctx) || [];
 });
 
 app.use(koaBody({ 
