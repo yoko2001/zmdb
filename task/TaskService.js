@@ -28,6 +28,7 @@ export default class TaskService {
         console.log(`filepath:${filepath}`);
         this.tasks.set(task.id, async () => {
             if (!await stat(filepath)) {
+                console.log(`${filepath} not found.`);
             }
             const startTime = toTime(task.start);
             const endTime = toTime(task.end);
