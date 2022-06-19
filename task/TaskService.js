@@ -1,4 +1,5 @@
 import { stat } from 'fs/promises';
+import EventEmitter from 'events';
 import exec from 'child_process';
 // import error from "./error.js";
 // import validation from "./validation.js";
@@ -14,7 +15,23 @@ const Status = {
 export default class TaskService {
 
     constructor() {
-        this.tasks = new Map();
+        this.emitter = new EventEmitter();
+        this.emitter.on('task', async (task) => {
+            const filepath = `cache/video/${task.clipId}.mp4`;
+            console.log(`filepath:${filepath}`);
+            if (!await stat(filepath)) {
+                console.log(`${filepath} not found.`);
+            }
+            const startTime = toTime(task.start);
+            const endTime = toTime(task.end);
+            const output = `tmp/${clipId}-${startTime}-${endTime}.mp4`;
+            console.log(`output:${output}`);
+            exec.exec(`ffmpeg -i "${filepath}" -ss ${startTime} -to ${endTime} ${output}`, (error, stdout, stderr) => {
+                console.log(error);
+                console.log(stdout);
+                console.log(stderr);
+            });
+        });
     }
 
     /**
@@ -24,21 +41,7 @@ export default class TaskService {
         const task = ctx.request.body;
         console.log(task);
 
-        const filepath = `cache/video/${task.clipId}.mp4`;
-        console.log(`filepath:${filepath}`);
-        this.tasks.set(task.id, async () => {
-            if (!await stat(filepath)) {
-                console.log(`${filepath} not found.`);
-            }
-            const startTime = toTime(task.start);
-            const endTime = toTime(task.end);
-            const output = `tmp/${clipId}-${startTime}-${endTime}.mp4`;
-            exec.exec(`ffmpeg -i "${filepath}" -ss ${startTime} -to ${endTime} ${output}`, (error, stdout, stderr) => {
-                console.log(error);
-                console.log(stdout);
-                console.log(stderr);
-            });
-        });
+        this.emitter.emit('task', task);
         return {};
     }
 }
