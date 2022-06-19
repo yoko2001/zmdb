@@ -24,7 +24,7 @@ export default class TaskService {
             }
             const startTime = toTime(task.start);
             const endTime = toTime(task.end);
-            const output = `tmp/${clipId}-${startTime}-${endTime}.mp4`;
+            const output = `tmp/${task.clipId}-${startTime}-${endTime}.mp4`;
             console.log(`output:${output}`);
             exec.exec(`ffmpeg -i "${filepath}" -ss ${startTime} -to ${endTime} ${output}`, (error, stdout, stderr) => {
                 console.log(error);
