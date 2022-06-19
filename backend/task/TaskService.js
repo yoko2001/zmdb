@@ -2,11 +2,6 @@ import moment from "moment";
 import error from "../error.js";
 import validation from "../validation.js";
 
-const STATUS_SUBMIT = 1;
-const STATUS_DOWNLOADING = 2;
-const STATUS_FINISH = 3;
-const STATUS_READ = 4;
-
 const Status = {
     SUBMIT: 1,
     DOWNLOADING: 2,
