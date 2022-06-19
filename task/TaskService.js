@@ -22,8 +22,10 @@ export default class TaskService {
      */
     insert = async (ctx) => {
         const { task } = ctx.request.body;
+        console.log(task);
 
         const filepath = `cache/video/${task.clipId}.mp4`;
+        console.log(`filepath:${filepath}`);
         tasks.set(task.id, async () => {
             if (!await stat(filepath)) {
             }
