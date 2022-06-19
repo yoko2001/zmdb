@@ -26,7 +26,7 @@ export default class TaskService {
 
         const filepath = `cache/video/${task.clipId}.mp4`;
         console.log(`filepath:${filepath}`);
-        tasks.set(task.id, async () => {
+        this.tasks.set(task.id, async () => {
             if (!await stat(filepath)) {
             }
             const startTime = toTime(task.start);
