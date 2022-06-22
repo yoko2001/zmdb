@@ -38,8 +38,8 @@ export default {
     },
     task: {
         interval: {
-            lowerLimit: 30,
-            upperLimit: 600
+            lowerLimit: 30000,
+            upperLimit: 600000
         }
     }
 }
