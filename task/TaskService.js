@@ -39,13 +39,13 @@ export default class TaskService {
                         res();
                     });
                 });
-                axios.put(`${config.api.url}/tasks/${task.id}`, {
+                await axios.put(`${config.api.url}/tasks/${task.id}`, {
                     status: Status.DOWNLOADED
                 });
             } catch (ex) {
                 console.log(error);
-                axios.put(`${config.api.url}/tasks/${task.id}`, {
-                    status: Status.DOWNLOADING
+                await axios.put(`${config.api.url}/tasks/${task.id}`, {
+                    status: Status.ERROR
                 });
             }
         });
@@ -57,10 +57,6 @@ export default class TaskService {
     insert = async (ctx) => {
         const task = ctx.request.body;
         console.log(task);
-
-        axios.put(`${config.api.url}/tasks/${task.id}`, {
-            status: Status.SUBMIT
-        });
         this.emitter.emit('task', task);
         return {};
     }
