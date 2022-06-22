@@ -41,7 +41,7 @@ export const SubtitleTable = ({match, clip, subtitles}) => {
             </Box>
             <FixedSizeList
                 ref={listRef}
-                height={300}
+                height={450}
                 itemCount={subtitles.length}
                 itemSize={25}
                 width={'100%'}

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Tabs, Tab } from '@mui/material';
 import Button from '@mui/material/Button'
 import { SubtitleButtonGroup } from './SubtitleButtonGroup';
 import { SubtitleTable } from './SubtitleTable';
@@ -9,10 +9,16 @@ export const SubtitleDialog = ({clip, subtitles, status, setStatus}) => {
 
     const { pinyinChecked } = React.useContext(context);
     const [match, setMatch] = React.useState(-1);
+    const [selectedTab, setSelectedTab] = React.useState(0);
     
     const onClose = () => {
         setMatch(-1);
         setStatus(false);
+        setSelectedTab(0);
+    }
+
+    const onChange = (e, newValue) => {
+        setSelectedTab(newValue);
     }
 
     React.useEffect(() => {
@@ -44,9 +50,41 @@ export const SubtitleDialog = ({clip, subtitles, status, setStatus}) => {
             <DialogTitle>
                 {clip.title}
             </DialogTitle>
-            <DialogContent>
-                {match >= 0 && <SubtitleButtonGroup subtitles={subtitles} match={match} setMatch={setMatch} />}
-                <SubtitleTable match={match} clip={clip} subtitles={subtitles} />                
+            <DialogContent sx={{ display:'flex', height:'50rem' }}>
+                <Box sx={{ flex:1 }}>
+                    <Tabs
+                        sx={{ borderRight: 1, borderColor: 'divider' }}
+                        orientation="vertical"
+                        value={selectedTab}
+                        onChange={onChange}
+                    >
+                        <Tab label="全部" />
+                        <Tab label="匹配" />
+                    </Tabs>
+                </Box>
+                
+                <Box sx={{ flex:10, ml:'2rem' }}>
+                    <div role='tabpanel' hidden={0 !== selectedTab}>
+                        { 
+                            selectedTab === 0 &&
+                            <Box>
+                                {match >= 0 && <SubtitleButtonGroup subtitles={subtitles} match={match} setMatch={setMatch} />}
+                                <SubtitleTable match={match} clip={clip} subtitles={subtitles} /> 
+                            </Box>
+                        }
+                    </div>
+                    <div role='tabpanel' hidden={1 !== selectedTab}>
+                        { 
+                            selectedTab === 1 &&
+                            <Box>
+                                <SubtitleTable 
+                                    match={-1} 
+                                    clip={clip} 
+                                    subtitles={subtitles.filter(subtitle => pinyinChecked ? subtitle.matchMode === 1 || subtitle.matchMode === 2 : subtitle.matchMode === 1)} /> 
+                            </Box>
+                        }
+                    </div>
+                </Box>                
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>关闭</Button>
