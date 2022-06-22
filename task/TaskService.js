@@ -1,15 +1,18 @@
 import { stat } from 'fs/promises';
 import EventEmitter from 'events';
 import exec from 'child_process';
+import axios from 'axios';
 // import error from "./error.js";
 // import validation from "./validation.js";
+import config from './config.js';
 import { toTime } from './util.js';
 
 const Status = {
+    ERROR: 0,
     SUBMIT: 1,
     DOWNLOADING: 2,
     DOWNLOADED: 3,
-    PUSH: 4 
+    PUSH: 4
 };
 
 export default class TaskService {
@@ -28,9 +31,18 @@ export default class TaskService {
             const cmd = `ffmpeg -i "${filepath}" -ss ${startTime} -to ${endTime} ${output}`;
             console.log(cmd);
             exec.exec(cmd, (error, stdout, stderr) => {
-                console.log(error);
+                if (error) {
+                    console.log(error);
+                    axios.put(`${config.api.url}/tasks/${task.id}`, {
+                        status: Status.DOWNLOADING
+                    });
+                    return;
+                }                
                 console.log(stdout);
                 console.log(stderr);
+                axios.put(`${config.api.url}/tasks/${task.id}`, {
+                    status: Status.DOWNLOADED
+                });
             });
         });
     }
@@ -42,6 +54,9 @@ export default class TaskService {
         const task = ctx.request.body;
         console.log(task);
 
+        axios.put(`${config.api.url}/tasks/${task.id}`, {
+            status: Status.SUBMIT
+        });
         this.emitter.emit('task', task);
         return {};
     }

@@ -3,6 +3,7 @@ import error from "../error.js";
 import validation from "../validation.js";
 
 const Status = {
+    ERROR: 0,
     SUBMIT: 1,
     DOWNLOADING: 2,
     DOWNLOADED: 3,
