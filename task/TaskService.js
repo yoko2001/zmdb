@@ -30,20 +30,24 @@ export default class TaskService {
             const output = `tmp/${task.clipId}-${startTime}-${endTime}.mp4`;
             const cmd = `ffmpeg -i "${filepath}" -ss ${startTime} -to ${endTime} ${output}`;
             console.log(cmd);
-            exec.exec(cmd, (error, stdout, stderr) => {
-                if (error) {
-                    console.log(error);
-                    axios.put(`${config.api.url}/tasks/${task.id}`, {
-                        status: Status.DOWNLOADING
+            try {
+                await new Promise((res, rej) => {
+                    exec.exec(cmd, (error, stdout, stderr) => {
+                        rej(error);                
+                        console.log(stdout);
+                        console.log(stderr);
+                        res();
                     });
-                    return;
-                }                
-                console.log(stdout);
-                console.log(stderr);
+                });
                 axios.put(`${config.api.url}/tasks/${task.id}`, {
                     status: Status.DOWNLOADED
                 });
-            });
+            } catch (ex) {
+                console.log(error);
+                axios.put(`${config.api.url}/tasks/${task.id}`, {
+                    status: Status.DOWNLOADING
+                });
+            }
         });
     }
 
